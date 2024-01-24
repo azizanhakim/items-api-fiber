@@ -42,6 +42,7 @@ func ConnectDB() {
 		&model.Sales{},
 		&model.SalesItem{},
 		&model.Type{},
+		&model.User{},
 	)
 
 	if err != nil {

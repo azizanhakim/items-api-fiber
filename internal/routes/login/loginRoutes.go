@@ -1,7 +1,7 @@
 package loginRoutes
 
 import (
-	loginHandler "github.com/azizanhakim/items-api-fiber/internal/login"
+	loginHandler "github.com/azizanhakim/items-api-fiber/internal/handler/login"
 	"github.com/gofiber/fiber/v2"
 )
 

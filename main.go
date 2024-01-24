@@ -1,12 +1,13 @@
 package main
 
 import (
+	"log"
+
 	"github.com/azizanhakim/items-api-fiber/database"
-	loginHandler "github.com/azizanhakim/items-api-fiber/internal/login"
+	loginHandler "github.com/azizanhakim/items-api-fiber/internal/handler/login"
 	"github.com/azizanhakim/items-api-fiber/router"
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
 )
 
 func main() {
@@ -15,26 +16,32 @@ func main() {
 
 	database.ConnectDB()
 
-	router.SetupRouter(app)
+	// Unauthenticated route
+	router.SetupUnauthenticatedRouter(app)
 
 	// JWT Middleware
-	app.Use(jwtware.New(jwtware.Config{
-		SigningKey: jwtware.SigningKey{
-			JWTAlg: jwtware.RS256,
-			Key:    loginHandler.PrivateKey.Public(),
-		},
-	}))
+	app.Use(func(c *fiber.Ctx) error {
+		// Configure JWT middleware
+		config := jwtware.Config{
+			SigningKey: jwtware.SigningKey{
+				JWTAlg: jwtware.RS256,
+				Key:    loginHandler.PublicKey,
+			},
+			SuccessHandler: func(c *fiber.Ctx) error {
+				return c.Next()
+			},
+			ErrorHandler: func(c *fiber.Ctx, err error) error {
+				log.Printf("JWT Middleware Error: %v", err)
+				return c.SendStatus(fiber.StatusUnauthorized)
+			},
+		}
 
-	// Restricted Routes
-	app.Get("/restricted", restricted)
+		return jwtware.New(config)(c)
+	})
+
+	// Authenticated route
+	router.SetupAuthenticatedRouter(app)
 
 	// Listen on PORT 3000
 	app.Listen(":3000")
-}
-
-func restricted(c *fiber.Ctx) error {
-	user := c.Locals("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	name := claims["name"].(string)
-	return c.SendString("Welcome " + name)
 }

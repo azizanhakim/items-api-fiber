@@ -44,7 +44,7 @@ func GetItems(c *fiber.Ctx) error {
 	db.Preload("Type").Find(&items)
 
 	if len(items) == 0 {
-		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "No items present", "data": nil})
+		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "No item present", "data": nil})
 	}
 
 	return c.JSON(fiber.Map{"status": "success", "message": "Items found", "data": items})

@@ -8,19 +8,19 @@ import (
 func SetupTypeRoutes(router fiber.Router) {
 	tipe := router.Group("/type")
 
-	// Create an Item
+	// Create an Type
 	tipe.Post("/", typeHandler.CreateTypes)
 
-	// Read all Item
+	// Read all Types
 	tipe.Get("/", typeHandler.GetTypes)
 
-	// Read one Item
+	// Read one Type
 	tipe.Get("/:typeId", typeHandler.GetType)
 
-	// Update one Item
+	// Update one Type
 	tipe.Put("/:typeId", typeHandler.UpdateType)
 
-	// Delete one Item
+	// Delete one Type
 	tipe.Delete("/:typeId", typeHandler.DeleteType)
 
 }

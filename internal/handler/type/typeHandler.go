@@ -39,7 +39,7 @@ func GetTypes(c *fiber.Ctx) error {
 	db.Find(&types)
 
 	if len(types) == 0 {
-		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "No types present", "data": nil})
+		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "No type present", "data": nil})
 	}
 
 	return c.JSON(fiber.Map{"status": "success", "message": "Types found", "data": types})
@@ -49,12 +49,12 @@ func GetType(c *fiber.Ctx) error {
 	db := database.DB
 	var tipe model.Type
 
-	// Read the param noteId
+	// Read the param typeId
 	id := c.Params("typeId")
 
 	// Find all types in the database
 	db.Find(&tipe, "id = ?", id)
-	fmt.Println("id lo:", tipe.ID)
+	fmt.Println("your ID:", tipe.ID)
 	if tipe.ID == 0 {
 		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "No type present", "data": nil})
 	}
